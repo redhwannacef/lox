@@ -1,0 +1,4 @@
+var test = "Hello, world!";
+
+// print something
+print(test)
