@@ -1,4 +1,1 @@
-var test = "Hello, world!";
-
-// print something
-print(test)
+5 == 5

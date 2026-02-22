@@ -8,6 +8,11 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.List;
 
+import com.craftinginterpreters.lox.Expr.Binary;
+import com.craftinginterpreters.lox.Expr.Grouping;
+import com.craftinginterpreters.lox.Expr.Literal;
+import com.craftinginterpreters.lox.Expr.Unary;
+
 public class Lox {
   static boolean hadError = false;
 
@@ -48,11 +53,14 @@ public class Lox {
   private static void run(String source) {
     Scanner scanner = new Scanner(source);
     List<Token> tokens = scanner.scanTokens();
+    Parser parser = new Parser(tokens);
+    Expr expression = parser.parse();
 
-    // For now, just print the tokens.
-    for (Token token : tokens) {
-      System.out.println(token);
-    }
+    // Stop if there was a syntax error.
+    if (hadError)
+      return;
+
+    System.out.println(new AstPrinter().print(expression));
   }
 
   static void error(int line, String message) {
@@ -62,5 +70,54 @@ public class Lox {
   private static void report(int line, String where, String message) {
     System.err.println("[line " + line + "] Error" + where + ": " + message);
     hadError = true;
+  }
+
+  static void error(Token token, String message) {
+    if (token.type == TokenType.EOF) {
+      report(token.line, " at end", message);
+    } else {
+      report(token.line, " at '" + token.lexeme + "'", message);
+    }
+  }
+
+  static class AstPrinter implements Expr.Visitor<String> {
+    String print(Expr expr) {
+      return expr.accept(this);
+    }
+
+    @Override
+    public String visitBinaryExpr(Binary expr) {
+      return parenthesize(expr.operator.lexeme, expr.left, expr.right);
+    }
+
+    @Override
+    public String visitGroupingExpr(Grouping expr) {
+      return parenthesize("group", expr.expression);
+    }
+
+    @Override
+    public String visitLiteralExpr(Literal expr) {
+      if (expr.value == null)
+        return "nil";
+      return expr.value.toString();
+    }
+
+    @Override
+    public String visitUnaryExpr(Unary expr) {
+      return parenthesize(expr.operator.lexeme, expr.right);
+    }
+
+    private String parenthesize(String name, Expr... exprs) {
+      StringBuilder builder = new StringBuilder();
+
+      builder.append("(").append(name);
+      for (Expr expr : exprs) {
+        builder.append(" ");
+        builder.append(expr.accept(this));
+      }
+      builder.append(")");
+
+      return builder.toString();
+    }
   }
 }
