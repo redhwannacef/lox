@@ -1,23 +1,8 @@
-var a = "global a";
-var b = "global b";
-var c = "global c";
+var test = "hello";
+var count = 6;
 
-{
-  var a = "outer a";
-  var b = "outer b";
-
-  {
-    var a = "inner a";
-    print a;
-    print b;
-    print c;
-  }
-
-  print a;
-  print b;
-  print c;
+if (count == 5) {
+  print test;
+} else {
+  print "nope";
 }
-
-print a;
-print b;
-print c;

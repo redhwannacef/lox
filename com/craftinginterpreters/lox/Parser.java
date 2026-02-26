@@ -1,7 +1,9 @@
 package com.craftinginterpreters.lox;
 
+import static com.craftinginterpreters.lox.TokenType.AND;
 import static com.craftinginterpreters.lox.TokenType.BANG;
 import static com.craftinginterpreters.lox.TokenType.BANG_EQUAL;
+import static com.craftinginterpreters.lox.TokenType.ELSE;
 import static com.craftinginterpreters.lox.TokenType.EOF;
 import static com.craftinginterpreters.lox.TokenType.EQUAL;
 import static com.craftinginterpreters.lox.TokenType.EQUAL_EQUAL;
@@ -9,6 +11,7 @@ import static com.craftinginterpreters.lox.TokenType.FALSE;
 import static com.craftinginterpreters.lox.TokenType.GREATER;
 import static com.craftinginterpreters.lox.TokenType.GREATER_EQUAL;
 import static com.craftinginterpreters.lox.TokenType.IDENTIFIER;
+import static com.craftinginterpreters.lox.TokenType.IF;
 import static com.craftinginterpreters.lox.TokenType.LEFT_BRACE;
 import static com.craftinginterpreters.lox.TokenType.LEFT_PAREN;
 import static com.craftinginterpreters.lox.TokenType.LESS;
@@ -16,6 +19,7 @@ import static com.craftinginterpreters.lox.TokenType.LESS_EQUAL;
 import static com.craftinginterpreters.lox.TokenType.MINUS;
 import static com.craftinginterpreters.lox.TokenType.NIL;
 import static com.craftinginterpreters.lox.TokenType.NUMBER;
+import static com.craftinginterpreters.lox.TokenType.OR;
 import static com.craftinginterpreters.lox.TokenType.PLUS;
 import static com.craftinginterpreters.lox.TokenType.PRINT;
 import static com.craftinginterpreters.lox.TokenType.RIGHT_BRACE;
@@ -73,12 +77,28 @@ class Parser {
   }
 
   private Stmt statement() {
+    if (match(IF))
+      return ifStatement();
     if (match(PRINT))
       return printStatement();
     if (match(LEFT_BRACE))
       return new Stmt.Block(block());
 
     return expressionStatement();
+  }
+
+  private Stmt ifStatement() {
+    consume(LEFT_PAREN, "Expect '(' after 'if'.");
+    Expr condition = expression();
+    consume(RIGHT_PAREN, "Expect ')' after if condition.");
+
+    Stmt thenBranch = statement();
+    Stmt elseBranch = null;
+    if (match(ELSE)) {
+      elseBranch = statement();
+    }
+
+    return new Stmt.If(condition, thenBranch, elseBranch);
   }
 
   private List<Stmt> block() {
@@ -109,7 +129,7 @@ class Parser {
   }
 
   private Expr assignment() {
-    Expr expr = equality();
+    Expr expr = or();
 
     if (match(EQUAL)) {
       Token equals = previous();
@@ -121,6 +141,30 @@ class Parser {
       }
 
       error(equals, "Invalid assignment target.");
+    }
+
+    return expr;
+  }
+
+  private Expr or() {
+    Expr expr = and();
+
+    while (match(OR)) {
+      Token operator = previous();
+      Expr right = and();
+      expr = new Expr.Logical(expr, operator, right);
+    }
+
+    return expr;
+  }
+
+  private Expr and() {
+    Expr expr = equality();
+
+    while (match(AND)) {
+      Token operator = previous();
+      Expr right = equality();
+      expr = new Expr.Logical(expr, operator, right);
     }
 
     return expr;
