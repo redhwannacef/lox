@@ -34,6 +34,7 @@ import static com.craftinginterpreters.lox.TokenType.SEMICOLON;
 import static com.craftinginterpreters.lox.TokenType.SLASH;
 import static com.craftinginterpreters.lox.TokenType.STAR;
 import static com.craftinginterpreters.lox.TokenType.STRING;
+import static com.craftinginterpreters.lox.TokenType.THIS;
 import static com.craftinginterpreters.lox.TokenType.TRUE;
 import static com.craftinginterpreters.lox.TokenType.VAR;
 import static com.craftinginterpreters.lox.TokenType.WHILE;
@@ -370,13 +371,14 @@ class Parser {
     if (match(NIL))
       return new Expr.Literal(null);
 
-    if (match(NUMBER, STRING)) {
+    if (match(NUMBER, STRING))
       return new Expr.Literal(previous().literal);
-    }
 
-    if (match(IDENTIFIER)) {
+    if (match(THIS))
+      return new Expr.This(previous());
+
+    if (match(IDENTIFIER))
       return new Expr.Variable(previous());
-    }
 
     if (match(LEFT_PAREN)) {
       Expr expr = expression();
