@@ -8,12 +8,6 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.List;
 
-import com.craftinginterpreters.lox.Expr.Binary;
-import com.craftinginterpreters.lox.Expr.Grouping;
-import com.craftinginterpreters.lox.Expr.Literal;
-import com.craftinginterpreters.lox.Expr.Unary;
-import com.craftinginterpreters.lox.Expr.Variable;
-
 public class Lox {
   private static final Interpreter interpreter = new Interpreter();
   static boolean hadError = false;

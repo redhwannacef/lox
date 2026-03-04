@@ -34,6 +34,7 @@ import static com.craftinginterpreters.lox.TokenType.SEMICOLON;
 import static com.craftinginterpreters.lox.TokenType.SLASH;
 import static com.craftinginterpreters.lox.TokenType.STAR;
 import static com.craftinginterpreters.lox.TokenType.STRING;
+import static com.craftinginterpreters.lox.TokenType.SUPER;
 import static com.craftinginterpreters.lox.TokenType.THIS;
 import static com.craftinginterpreters.lox.TokenType.TRUE;
 import static com.craftinginterpreters.lox.TokenType.VAR;
@@ -380,6 +381,13 @@ class Parser {
 
     if (match(NUMBER, STRING))
       return new Expr.Literal(previous().literal);
+
+    if (match(SUPER)) {
+      Token keyword = previous();
+      consume(DOT, "Expect '.' after 'super'.");
+      Token method = consume(IDENTIFIER, "Expect superclass method name.");
+      return new Expr.Super(keyword, method);
+    }
 
     if (match(THIS))
       return new Expr.This(previous());
