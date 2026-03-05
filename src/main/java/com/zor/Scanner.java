@@ -26,7 +26,6 @@ import static com.zor.TokenType.NIL;
 import static com.zor.TokenType.NUMBER;
 import static com.zor.TokenType.OR;
 import static com.zor.TokenType.PLUS;
-import static com.zor.TokenType.PRINT;
 import static com.zor.TokenType.RETURN;
 import static com.zor.TokenType.RIGHT_BRACE;
 import static com.zor.TokenType.RIGHT_PAREN;
@@ -65,7 +64,6 @@ class Scanner {
     keywords.put("if", IF);
     keywords.put("nil", NIL);
     keywords.put("or", OR);
-    keywords.put("print", PRINT);
     keywords.put("return", RETURN);
     keywords.put("super", SUPER);
     keywords.put("this", THIS);

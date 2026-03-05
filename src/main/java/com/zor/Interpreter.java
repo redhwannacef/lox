@@ -14,31 +14,18 @@ import com.zor.Expr.Variable;
 import com.zor.Stmt.Block;
 import com.zor.Stmt.Expression;
 import com.zor.Stmt.If;
-import com.zor.Stmt.Print;
 import com.zor.Stmt.Var;
+import com.zor.globals.Print;
+import com.zor.globals.Clock;
 
-class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
+public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
   final Environment globals = new Environment();
   private Environment environment = globals;
   private final Map<Expr, Integer> locals = new HashMap<>();
 
   Interpreter() {
-    globals.define("clock", new ZorCallable() {
-      @Override
-      public int arity() {
-        return 0;
-      }
-
-      @Override
-      public Object call(Interpreter interpreter, List<Object> arguments) {
-        return (double) System.currentTimeMillis() / 1000.0;
-      }
-
-      @Override
-      public String toString() {
-        return "<native clock fn>";
-      }
-    });
+    globals.define("clock", new Clock());
+    globals.define("print", new Print());
   }
 
   void interpret(List<Stmt> statements) {
@@ -125,13 +112,6 @@ class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
   @Override
   public Void visitExpressionStmt(Expression stmt) {
     evaluate(stmt.expression);
-    return null;
-  }
-
-  @Override
-  public Void visitPrintStmt(Print stmt) {
-    Object value = evaluate(stmt.expression);
-    System.out.println(stringify(value));
     return null;
   }
 
@@ -340,20 +320,6 @@ class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
       return false;
 
     return a.equals(b);
-  }
-
-  private String stringify(Object object) {
-    if (object == null)
-      return "nil";
-
-    if (object instanceof Double) {
-      String text = object.toString();
-      if (text.endsWith(".0"))
-        text = text.substring(0, text.length() - 2);
-      return text;
-    }
-
-    return object.toString();
   }
 
   private Object evaluate(Expr expr) {

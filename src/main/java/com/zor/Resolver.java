@@ -21,7 +21,6 @@ import com.zor.Stmt.Class;
 import com.zor.Stmt.Expression;
 import com.zor.Stmt.Function;
 import com.zor.Stmt.If;
-import com.zor.Stmt.Print;
 import com.zor.Stmt.Return;
 import com.zor.Stmt.Var;
 import com.zor.Stmt.While;
@@ -71,12 +70,6 @@ class Resolver implements Expr.Visitor<Void>, Stmt.Visitor<Void> {
     resolve(stmt.thenBranch);
     if (stmt.elseBranch != null)
       resolve(stmt.elseBranch);
-    return null;
-  }
-
-  @Override
-  public Void visitPrintStmt(Print stmt) {
-    resolve(stmt.expression);
     return null;
   }
 

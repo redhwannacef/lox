@@ -26,7 +26,6 @@ import static com.zor.TokenType.NIL;
 import static com.zor.TokenType.NUMBER;
 import static com.zor.TokenType.OR;
 import static com.zor.TokenType.PLUS;
-import static com.zor.TokenType.PRINT;
 import static com.zor.TokenType.RETURN;
 import static com.zor.TokenType.RIGHT_BRACE;
 import static com.zor.TokenType.RIGHT_PAREN;
@@ -140,8 +139,6 @@ class Parser {
       return forStatement();
     if (match(IF))
       return ifStatement();
-    if (match(PRINT))
-      return printStatement();
     if (match(RETURN))
       return returnStatement();
     if (match(WHILE))
@@ -222,12 +219,6 @@ class Parser {
 
     consume(RIGHT_BRACE, "Expect '}' after block.");
     return statements;
-  }
-
-  private Stmt printStatement() {
-    Expr value = expression();
-    consume(SEMICOLON, "Expect ';' after value.");
-    return new Stmt.Print(value);
   }
 
   private Stmt returnStatement() {
@@ -469,7 +460,6 @@ class Parser {
         case FOR:
         case IF:
         case WHILE:
-        case PRINT:
         case RETURN:
           return;
         default:

@@ -19,11 +19,11 @@ class Dog < Animal {
   }
 }
 
-print total;
-print double(total);
-print Dog().speak();
+print(total);
+print(double(total));
+print(Dog().speak());
 if (total == 6 and true) {
-  print "ok";
+  print("ok");
 } else {
-  print "bad";
+  print("bad");
 }
