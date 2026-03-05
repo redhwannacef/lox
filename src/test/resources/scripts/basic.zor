@@ -1,0 +1,29 @@
+var total = 0;
+for (var i = 1; i <= 3; i = i + 1) {
+  total = total + i;
+}
+
+fun double(n) {
+  return n * 2;
+}
+
+class Animal {
+  speak() {
+    return "noise";
+  }
+}
+
+class Dog < Animal {
+  speak() {
+    return super.speak() + " bark";
+  }
+}
+
+print total;
+print double(total);
+print Dog().speak();
+if (total == 6 and true) {
+  print "ok";
+} else {
+  print "bad";
+}
