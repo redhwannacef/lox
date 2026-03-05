@@ -1,30 +1,30 @@
-package com.craftinginterpreters.lox;
+package com.zor;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Stack;
 
-import com.craftinginterpreters.lox.Expr.Assign;
-import com.craftinginterpreters.lox.Expr.Binary;
-import com.craftinginterpreters.lox.Expr.Call;
-import com.craftinginterpreters.lox.Expr.Get;
-import com.craftinginterpreters.lox.Expr.Grouping;
-import com.craftinginterpreters.lox.Expr.Literal;
-import com.craftinginterpreters.lox.Expr.Logical;
-import com.craftinginterpreters.lox.Expr.Set;
-import com.craftinginterpreters.lox.Expr.This;
-import com.craftinginterpreters.lox.Expr.Unary;
-import com.craftinginterpreters.lox.Expr.Variable;
-import com.craftinginterpreters.lox.Stmt.Block;
-import com.craftinginterpreters.lox.Stmt.Class;
-import com.craftinginterpreters.lox.Stmt.Expression;
-import com.craftinginterpreters.lox.Stmt.Function;
-import com.craftinginterpreters.lox.Stmt.If;
-import com.craftinginterpreters.lox.Stmt.Print;
-import com.craftinginterpreters.lox.Stmt.Return;
-import com.craftinginterpreters.lox.Stmt.Var;
-import com.craftinginterpreters.lox.Stmt.While;
+import com.zor.Expr.Assign;
+import com.zor.Expr.Binary;
+import com.zor.Expr.Call;
+import com.zor.Expr.Get;
+import com.zor.Expr.Grouping;
+import com.zor.Expr.Literal;
+import com.zor.Expr.Logical;
+import com.zor.Expr.Set;
+import com.zor.Expr.This;
+import com.zor.Expr.Unary;
+import com.zor.Expr.Variable;
+import com.zor.Stmt.Block;
+import com.zor.Stmt.Class;
+import com.zor.Stmt.Expression;
+import com.zor.Stmt.Function;
+import com.zor.Stmt.If;
+import com.zor.Stmt.Print;
+import com.zor.Stmt.Return;
+import com.zor.Stmt.Var;
+import com.zor.Stmt.While;
 
 class Resolver implements Expr.Visitor<Void>, Stmt.Visitor<Void> {
   private final Interpreter interpreter;
@@ -83,11 +83,11 @@ class Resolver implements Expr.Visitor<Void>, Stmt.Visitor<Void> {
   @Override
   public Void visitReturnStmt(Return stmt) {
     if (currentFunction == FunctionType.NONE)
-      Lox.error(stmt.keyword, "Can't return from top-level code.");
+      Zor.error(stmt.keyword, "Can't return from top-level code.");
 
     if (stmt.value != null) {
       if (currentFunction == FunctionType.INITIALIZER)
-        Lox.error(stmt.keyword, "Can't return a value from an initializer.");
+        Zor.error(stmt.keyword, "Can't return a value from an initializer.");
 
       resolve(stmt.value);
     }
@@ -160,7 +160,7 @@ class Resolver implements Expr.Visitor<Void>, Stmt.Visitor<Void> {
   @Override
   public Void visitVariableExpr(Variable expr) {
     if (!scopes.isEmpty() && scopes.peek().get(expr.name.lexeme) == Boolean.FALSE)
-      Lox.error(expr.name, "Can't read local variable in its own initializer.");
+      Zor.error(expr.name, "Can't read local variable in its own initializer.");
 
     resolveLocal(expr, expr.name);
     return null;
@@ -176,7 +176,7 @@ class Resolver implements Expr.Visitor<Void>, Stmt.Visitor<Void> {
 
     if (stmt.superclass != null) {
       if (stmt.name.lexeme.equals(stmt.superclass.name.lexeme))
-        Lox.error(stmt.superclass.name, "A class can't inherit from itself.");
+        Zor.error(stmt.superclass.name, "A class can't inherit from itself.");
 
       currentClass = ClassType.SUBCLASS;
       resolve(stmt.superclass);
@@ -220,7 +220,7 @@ class Resolver implements Expr.Visitor<Void>, Stmt.Visitor<Void> {
   @Override
   public Void visitThisExpr(This expr) {
     if (currentClass == ClassType.NONE) {
-      Lox.error(expr.keyword, "Can't use 'this' outside of a class.");
+      Zor.error(expr.keyword, "Can't use 'this' outside of a class.");
       return null;
     }
 
@@ -232,9 +232,9 @@ class Resolver implements Expr.Visitor<Void>, Stmt.Visitor<Void> {
   @Override
   public Void visitSuperExpr(Expr.Super expr) {
     if (currentClass == ClassType.NONE)
-      Lox.error(expr.keyword, "Can't use 'super' outside of a class.");
+      Zor.error(expr.keyword, "Can't use 'super' outside of a class.");
     else if (currentClass != ClassType.SUBCLASS)
-      Lox.error(expr.keyword, "Can't use 'super' in a class with no superclass.");
+      Zor.error(expr.keyword, "Can't use 'super' in a class with no superclass.");
 
     resolveLocal(expr, expr.keyword);
     return null;
@@ -263,7 +263,7 @@ class Resolver implements Expr.Visitor<Void>, Stmt.Visitor<Void> {
     Map<String, Boolean> scope = scopes.peek();
 
     if (scope.containsKey(name.lexeme))
-      Lox.error(name, "Already a variable with this name in this scope.");
+      Zor.error(name, "Already a variable with this name in this scope.");
 
     scope.put(name.lexeme, false);
   }

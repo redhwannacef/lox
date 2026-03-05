@@ -1,22 +1,22 @@
-package com.craftinginterpreters.lox;
+package com.zor;
 
 import java.util.List;
 
-class LoxFunction implements LoxCallable {
+class ZorFunction implements ZorCallable {
   private final Stmt.Function declaration;
   private final Environment closure;
   private final boolean isInitializer;
 
-  LoxFunction(Stmt.Function declaration, Environment closure, boolean isInitializer) {
+  ZorFunction(Stmt.Function declaration, Environment closure, boolean isInitializer) {
     this.declaration = declaration;
     this.closure = closure;
     this.isInitializer = isInitializer;
   }
 
-  LoxFunction bind(LoxInstance instance) {
+  ZorFunction bind(ZorInstance instance) {
     Environment environment = new Environment(closure);
     environment.define("this", instance);
-    return new LoxFunction(declaration, environment, isInitializer);
+    return new ZorFunction(declaration, environment, isInitializer);
   }
 
   @Override

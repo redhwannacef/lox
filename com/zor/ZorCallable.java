@@ -1,8 +1,8 @@
-package com.craftinginterpreters.lox;
+package com.zor;
 
 import java.util.List;
 
-interface LoxCallable {
+interface ZorCallable {
   int arity();
 
   Object call(Interpreter interpreter, List<Object> arguments);

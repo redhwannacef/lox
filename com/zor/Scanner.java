@@ -1,44 +1,44 @@
-package com.craftinginterpreters.lox;
+package com.zor;
 
-import static com.craftinginterpreters.lox.TokenType.AND;
-import static com.craftinginterpreters.lox.TokenType.BANG;
-import static com.craftinginterpreters.lox.TokenType.BANG_EQUAL;
-import static com.craftinginterpreters.lox.TokenType.CLASS;
-import static com.craftinginterpreters.lox.TokenType.COMMA;
-import static com.craftinginterpreters.lox.TokenType.DOT;
-import static com.craftinginterpreters.lox.TokenType.ELSE;
-import static com.craftinginterpreters.lox.TokenType.EOF;
-import static com.craftinginterpreters.lox.TokenType.EQUAL;
-import static com.craftinginterpreters.lox.TokenType.EQUAL_EQUAL;
-import static com.craftinginterpreters.lox.TokenType.FALSE;
-import static com.craftinginterpreters.lox.TokenType.FOR;
-import static com.craftinginterpreters.lox.TokenType.FUN;
-import static com.craftinginterpreters.lox.TokenType.GREATER;
-import static com.craftinginterpreters.lox.TokenType.GREATER_EQUAL;
-import static com.craftinginterpreters.lox.TokenType.IDENTIFIER;
-import static com.craftinginterpreters.lox.TokenType.IF;
-import static com.craftinginterpreters.lox.TokenType.LEFT_BRACE;
-import static com.craftinginterpreters.lox.TokenType.LEFT_PAREN;
-import static com.craftinginterpreters.lox.TokenType.LESS;
-import static com.craftinginterpreters.lox.TokenType.LESS_EQUAL;
-import static com.craftinginterpreters.lox.TokenType.MINUS;
-import static com.craftinginterpreters.lox.TokenType.NIL;
-import static com.craftinginterpreters.lox.TokenType.NUMBER;
-import static com.craftinginterpreters.lox.TokenType.OR;
-import static com.craftinginterpreters.lox.TokenType.PLUS;
-import static com.craftinginterpreters.lox.TokenType.PRINT;
-import static com.craftinginterpreters.lox.TokenType.RETURN;
-import static com.craftinginterpreters.lox.TokenType.RIGHT_BRACE;
-import static com.craftinginterpreters.lox.TokenType.RIGHT_PAREN;
-import static com.craftinginterpreters.lox.TokenType.SEMICOLON;
-import static com.craftinginterpreters.lox.TokenType.SLASH;
-import static com.craftinginterpreters.lox.TokenType.STAR;
-import static com.craftinginterpreters.lox.TokenType.STRING;
-import static com.craftinginterpreters.lox.TokenType.SUPER;
-import static com.craftinginterpreters.lox.TokenType.THIS;
-import static com.craftinginterpreters.lox.TokenType.TRUE;
-import static com.craftinginterpreters.lox.TokenType.VAR;
-import static com.craftinginterpreters.lox.TokenType.WHILE;
+import static com.zor.TokenType.AND;
+import static com.zor.TokenType.BANG;
+import static com.zor.TokenType.BANG_EQUAL;
+import static com.zor.TokenType.CLASS;
+import static com.zor.TokenType.COMMA;
+import static com.zor.TokenType.DOT;
+import static com.zor.TokenType.ELSE;
+import static com.zor.TokenType.EOF;
+import static com.zor.TokenType.EQUAL;
+import static com.zor.TokenType.EQUAL_EQUAL;
+import static com.zor.TokenType.FALSE;
+import static com.zor.TokenType.FOR;
+import static com.zor.TokenType.FUN;
+import static com.zor.TokenType.GREATER;
+import static com.zor.TokenType.GREATER_EQUAL;
+import static com.zor.TokenType.IDENTIFIER;
+import static com.zor.TokenType.IF;
+import static com.zor.TokenType.LEFT_BRACE;
+import static com.zor.TokenType.LEFT_PAREN;
+import static com.zor.TokenType.LESS;
+import static com.zor.TokenType.LESS_EQUAL;
+import static com.zor.TokenType.MINUS;
+import static com.zor.TokenType.NIL;
+import static com.zor.TokenType.NUMBER;
+import static com.zor.TokenType.OR;
+import static com.zor.TokenType.PLUS;
+import static com.zor.TokenType.PRINT;
+import static com.zor.TokenType.RETURN;
+import static com.zor.TokenType.RIGHT_BRACE;
+import static com.zor.TokenType.RIGHT_PAREN;
+import static com.zor.TokenType.SEMICOLON;
+import static com.zor.TokenType.SLASH;
+import static com.zor.TokenType.STAR;
+import static com.zor.TokenType.STRING;
+import static com.zor.TokenType.SUPER;
+import static com.zor.TokenType.THIS;
+import static com.zor.TokenType.TRUE;
+import static com.zor.TokenType.VAR;
+import static com.zor.TokenType.WHILE;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -164,7 +164,7 @@ class Scanner {
         } else if (isAlpha(c)) {
           identifier();
         } else {
-          Lox.error(line, "Unexpected character.");
+          Zor.error(line, "Unexpected character.");
         }
         break;
     }
@@ -194,8 +194,7 @@ class Scanner {
         advance();
     }
 
-    addToken(NUMBER,
-        Double.parseDouble(source.substring(start, current)));
+    addToken(NUMBER, Double.parseDouble(source.substring(start, current)));
   }
 
   private void string() {
@@ -206,7 +205,7 @@ class Scanner {
     }
 
     if (isAtEnd()) {
-      Lox.error(line, "Unterminated string.");
+      Zor.error(line, "Unterminated string.");
       return;
     }
 

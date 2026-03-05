@@ -1,4 +1,4 @@
-package com.craftinginterpreters.lox;
+package com.zor;
 
 enum TokenType {
   // Single-character tokens.

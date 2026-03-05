@@ -1,13 +1,13 @@
-package com.craftinginterpreters.lox;
+package com.zor;
 
 import java.util.HashMap;
 import java.util.Map;
 
-class LoxInstance {
-  private LoxClass klass;
+class ZorInstance {
+  private ZorClass klass;
   private final Map<String, Object> fields = new HashMap<>();
 
-  LoxInstance(LoxClass klass) {
+  ZorInstance(ZorClass klass) {
     this.klass = klass;
   }
 
@@ -15,7 +15,7 @@ class LoxInstance {
     if (fields.containsKey(name.lexeme))
       return fields.get(name.lexeme);
 
-    LoxFunction method = klass.findMethod(name.lexeme);
+    ZorFunction method = klass.findMethod(name.lexeme);
     if (method != null)
       return method.bind(this);
 

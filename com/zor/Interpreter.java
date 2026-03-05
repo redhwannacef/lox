@@ -1,21 +1,21 @@
-package com.craftinginterpreters.lox;
+package com.zor;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.craftinginterpreters.lox.Expr.Assign;
-import com.craftinginterpreters.lox.Expr.Binary;
-import com.craftinginterpreters.lox.Expr.Grouping;
-import com.craftinginterpreters.lox.Expr.Literal;
-import com.craftinginterpreters.lox.Expr.Unary;
-import com.craftinginterpreters.lox.Expr.Variable;
-import com.craftinginterpreters.lox.Stmt.Block;
-import com.craftinginterpreters.lox.Stmt.Expression;
-import com.craftinginterpreters.lox.Stmt.If;
-import com.craftinginterpreters.lox.Stmt.Print;
-import com.craftinginterpreters.lox.Stmt.Var;
+import com.zor.Expr.Assign;
+import com.zor.Expr.Binary;
+import com.zor.Expr.Grouping;
+import com.zor.Expr.Literal;
+import com.zor.Expr.Unary;
+import com.zor.Expr.Variable;
+import com.zor.Stmt.Block;
+import com.zor.Stmt.Expression;
+import com.zor.Stmt.If;
+import com.zor.Stmt.Print;
+import com.zor.Stmt.Var;
 
 class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
   final Environment globals = new Environment();
@@ -23,7 +23,7 @@ class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
   private final Map<Expr, Integer> locals = new HashMap<>();
 
   Interpreter() {
-    globals.define("clock", new LoxCallable() {
+    globals.define("clock", new ZorCallable() {
       @Override
       public int arity() {
         return 0;
@@ -46,7 +46,7 @@ class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
       for (Stmt statement : statements)
         execute(statement);
     } catch (RuntimeError error) {
-      Lox.runtimeError(error);
+      Zor.runtimeError(error);
     }
   }
 
@@ -211,10 +211,10 @@ class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
     for (Expr argument : expr.arguments)
       arguments.add(evaluate(argument));
 
-    if (!(callee instanceof LoxCallable))
+    if (!(callee instanceof ZorCallable))
       throw new RuntimeError(expr.paren, "Can only call functions and classes.");
 
-    LoxCallable function = (LoxCallable) callee;
+    ZorCallable function = (ZorCallable) callee;
 
     if (arguments.size() != function.arity())
       throw new RuntimeError(expr.paren,
@@ -225,7 +225,7 @@ class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
 
   @Override
   public Void visitFunctionStmt(Stmt.Function stmt) {
-    LoxFunction function = new LoxFunction(stmt, environment, false);
+    ZorFunction function = new ZorFunction(stmt, environment, false);
     environment.define(stmt.name.lexeme, function);
     return null;
   }
@@ -244,7 +244,7 @@ class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
     Object superclass = null;
     if (stmt.superclass != null) {
       superclass = evaluate(stmt.superclass);
-      if (!(superclass instanceof LoxClass))
+      if (!(superclass instanceof ZorClass))
         throw new RuntimeError(stmt.superclass.name, "Superclass must be a class.");
     }
 
@@ -255,13 +255,13 @@ class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
       environment.define("super", superclass);
     }
 
-    Map<String, LoxFunction> methods = new HashMap<>();
+    Map<String, ZorFunction> methods = new HashMap<>();
     for (Stmt.Function method : stmt.methods) {
-      LoxFunction function = new LoxFunction(method, environment, method.name.lexeme.equals("init"));
+      ZorFunction function = new ZorFunction(method, environment, method.name.lexeme.equals("init"));
       methods.put(method.name.lexeme, function);
     }
 
-    LoxClass klass = new LoxClass(stmt.name.lexeme, (LoxClass) superclass, methods);
+    ZorClass klass = new ZorClass(stmt.name.lexeme, (ZorClass) superclass, methods);
 
     if (superclass != null)
       environment = environment.enclosing;
@@ -274,8 +274,8 @@ class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
   public Object visitGetExpr(Expr.Get expr) {
     Object object = evaluate(expr.object);
 
-    if (object instanceof LoxInstance)
-      return ((LoxInstance) object).get(expr.name);
+    if (object instanceof ZorInstance)
+      return ((ZorInstance) object).get(expr.name);
 
     throw new RuntimeError(expr.name, "Only instances have properties.");
   }
@@ -284,11 +284,11 @@ class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
   public Object visitSetExpr(Expr.Set expr) {
     Object object = evaluate(expr.object);
 
-    if (!(object instanceof LoxInstance))
+    if (!(object instanceof ZorInstance))
       throw new RuntimeError(expr.name, "Only instances have fields.");
 
     Object value = evaluate(expr.value);
-    ((LoxInstance) object).set(expr.name, value);
+    ((ZorInstance) object).set(expr.name, value);
 
     return value;
   }
@@ -301,10 +301,10 @@ class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
   @Override
   public Object visitSuperExpr(Expr.Super expr) {
     int distance = locals.get(expr);
-    LoxClass superclass = (LoxClass) environment.getAt(distance, "super");
-    LoxInstance object = (LoxInstance) environment.getAt(distance - 1, "this");
+    ZorClass superclass = (ZorClass) environment.getAt(distance, "super");
+    ZorInstance object = (ZorInstance) environment.getAt(distance - 1, "this");
 
-    LoxFunction method = superclass.findMethod(expr.method.lexeme);
+    ZorFunction method = superclass.findMethod(expr.method.lexeme);
 
     if (method == null)
       throw new RuntimeError(expr.method, "Undefined property '" + expr.method.lexeme + "'.");
