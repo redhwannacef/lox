@@ -1,0 +1,5 @@
+fun handler() {
+  return readFile("./example/index.html");
+}
+
+serve(handler);

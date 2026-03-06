@@ -17,6 +17,7 @@ import com.zor.Stmt.If;
 import com.zor.Stmt.Var;
 import com.zor.globals.Print;
 import com.zor.globals.Clock;
+import com.zor.globals.ReadFile;
 import com.zor.globals.Serve;
 
 public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
@@ -27,6 +28,7 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
   Interpreter() {
     globals.define("clock", new Clock());
     globals.define("print", new Print());
+    globals.define("readFile", new ReadFile());
     globals.define("serve", new Serve());
   }
 

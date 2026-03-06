@@ -44,7 +44,7 @@ public final class Serve implements ZorCallable {
 
   private static String parseResponse(Interpreter interpreter, Object callback, Token token) {
     if (!(callback instanceof ZorCallable))
-      throw new RuntimeError(token, "Expected function as argument 0");
+      throw new RuntimeError(token, "server(handler) expects a function handler that returns a string.");
 
     var function = (ZorCallable) callback;
     return function.call(interpreter, List.of(), token).toString();

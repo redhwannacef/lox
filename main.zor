@@ -1,5 +1,0 @@
-fun handler() {
-  return "<h1>Hello, world!</h1>";
-}
-
-serve(handler);
