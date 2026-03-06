@@ -25,7 +25,7 @@ class ZorFunction implements ZorCallable {
   }
 
   @Override
-  public Object call(Interpreter interpreter, List<Object> arguments) {
+  public Object call(Interpreter interpreter, List<Object> arguments, Token token) {
     Environment environment = new Environment(closure);
 
     for (int i = 0; i < declaration.params.size(); i++)
