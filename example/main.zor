@@ -1,5 +1,5 @@
 fun handler() {
-  return readFile("./example/index.html");
+  return staticResponse("example/public");
 }
 
 serve(handler);
