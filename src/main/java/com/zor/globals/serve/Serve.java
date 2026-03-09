@@ -26,6 +26,7 @@ public final class Serve implements ZorCallable {
       server.createContext("/", responseHandler);
       server.setExecutor(Executors.newVirtualThreadPerTaskExecutor());
       server.start();
+      registerShutdownHook(server);
     } catch (Exception error) {
       throw new RuntimeError(token, error.getMessage());
     }
@@ -36,6 +37,11 @@ public final class Serve implements ZorCallable {
   @Override
   public String toString() {
     return "<native serve fn>";
+  }
+
+  private static void registerShutdownHook(HttpServer server) {
+    var shutdownHook = new Thread(() -> server.stop(1), "zor-serve-shutdown-hook");
+    Runtime.getRuntime().addShutdownHook(shutdownHook);
   }
 
   private static HttpHandler parseResponse(Interpreter interpreter, Object callback, Token token) {
