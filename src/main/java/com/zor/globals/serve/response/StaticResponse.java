@@ -68,7 +68,7 @@ public final class StaticResponse implements ZorCallable {
 
       var target = resolvePath(root, exchange.getRequestURI().getRawPath());
       if (target == null || !Files.exists(target) || !Files.isRegularFile(target)) {
-        sendStatus(exchange, 404);
+        sendNotFound(exchange, method, root);
         return;
       }
 
@@ -76,12 +76,12 @@ public final class StaticResponse implements ZorCallable {
       try {
         realTarget = target.toRealPath();
       } catch (IOException error) {
-        sendStatus(exchange, 404);
+        sendNotFound(exchange, method, root);
         return;
       }
 
       if (!realTarget.startsWith(root)) {
-        sendStatus(exchange, 404);
+        sendNotFound(exchange, method, root);
         return;
       }
 
@@ -123,5 +123,21 @@ public final class StaticResponse implements ZorCallable {
   private static void sendStatus(HttpExchange exchange, int status) throws IOException {
     exchange.sendResponseHeaders(status, -1);
     exchange.close();
+  }
+
+  private static void sendNotFound(HttpExchange exchange, String method, Path root) throws IOException {
+    var notFound = root.resolve("404.html").normalize();
+    if (!notFound.startsWith(root) || !Files.exists(notFound) || !Files.isRegularFile(notFound)
+        || method.equals("HEAD")) {
+      sendStatus(exchange, 404);
+      return;
+    }
+
+    var body = Files.readAllBytes(notFound);
+    exchange.getResponseHeaders().set("Content-Type", "text/html; charset=utf-8");
+    exchange.sendResponseHeaders(404, body.length);
+    try (var output = exchange.getResponseBody()) {
+      output.write(body);
+    }
   }
 }
