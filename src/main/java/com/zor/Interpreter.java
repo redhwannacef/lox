@@ -15,11 +15,12 @@ import com.zor.Stmt.Block;
 import com.zor.Stmt.Expression;
 import com.zor.Stmt.If;
 import com.zor.Stmt.Var;
-import com.zor.globals.Print;
 import com.zor.globals.Clock;
+import com.zor.globals.Print;
 import com.zor.globals.ReadFile;
 import com.zor.globals.serve.Serve;
 import com.zor.globals.serve.response.HtmlResponse;
+import com.zor.globals.serve.response.RedirectResponse;
 import com.zor.globals.serve.response.StaticResponse;
 
 public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
@@ -34,6 +35,7 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
     globals.define("serve", new Serve());
     globals.define("htmlResponse", new HtmlResponse());
     globals.define("staticResponse", new StaticResponse());
+    globals.define("redirectResponse", new RedirectResponse());
   }
 
   void interpret(List<Stmt> statements) {

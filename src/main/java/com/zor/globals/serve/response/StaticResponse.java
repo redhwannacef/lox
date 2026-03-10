@@ -9,11 +9,11 @@ import java.nio.file.Path;
 import java.util.List;
 
 import com.sun.net.httpserver.HttpExchange;
-import com.sun.net.httpserver.HttpHandler;
 import com.zor.Interpreter;
 import com.zor.RuntimeError;
 import com.zor.Token;
 import com.zor.ZorCallable;
+import com.zor.globals.serve.ZodHandler;
 
 public final class StaticResponse implements ZorCallable {
 
@@ -50,7 +50,7 @@ public final class StaticResponse implements ZorCallable {
     return (String) path;
   }
 
-  private static final class StaticHandler implements HttpHandler {
+  private static final class StaticHandler implements ZodHandler {
     private final Path root;
 
     private StaticHandler(Path root) {

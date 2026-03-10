@@ -6,11 +6,11 @@ import java.io.IOException;
 import java.util.List;
 
 import com.sun.net.httpserver.HttpExchange;
-import com.sun.net.httpserver.HttpHandler;
 import com.zor.Interpreter;
 import com.zor.RuntimeError;
 import com.zor.Token;
 import com.zor.ZorCallable;
+import com.zor.globals.serve.ZodHandler;
 
 public final class HtmlResponse implements ZorCallable {
 
@@ -32,7 +32,7 @@ public final class HtmlResponse implements ZorCallable {
     return "<native htmlResponse fn>";
   }
 
-  private static final class HtmlHandler implements HttpHandler {
+  private static final class HtmlHandler implements ZodHandler {
     private final String response;
 
     private HtmlHandler(String response) {

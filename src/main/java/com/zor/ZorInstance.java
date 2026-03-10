@@ -3,11 +3,11 @@ package com.zor;
 import java.util.HashMap;
 import java.util.Map;
 
-class ZorInstance {
+public class ZorInstance {
   private ZorClass klass;
   private final Map<String, Object> fields = new HashMap<>();
 
-  ZorInstance(ZorClass klass) {
+  public ZorInstance(ZorClass klass) {
     this.klass = klass;
   }
 
@@ -22,8 +22,12 @@ class ZorInstance {
     throw new RuntimeError(name, "Undefined property '" + name.lexeme + "'.");
   }
 
-  void set(Token name, Object value) {
+  public void set(Token name, Object value) {
     fields.put(name.lexeme, value);
+  }
+
+  public void set(String name, Object value) {
+    fields.put(name, value);
   }
 
   @Override

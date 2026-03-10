@@ -4,6 +4,7 @@ import java.net.InetSocketAddress;
 import java.util.List;
 import java.util.concurrent.Executors;
 
+import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import com.sun.net.httpserver.HttpServer;
 import com.zor.Interpreter;
@@ -49,11 +50,26 @@ public final class Serve implements ZorCallable {
       throw new RuntimeError(token, "serve(handler) expects a function handler.");
 
     var function = (ZorCallable) callback;
-    var response = function.call(interpreter, List.of(), token);
-    if (!(response instanceof HttpHandler handler))
-      throw new RuntimeError(token,
-          "handler must return an HttpHandler like htmlResponse(body) or staticResponse(path).");
+    return new CallbackHttpHandler(interpreter, function, token);
+  }
 
-    return handler;
+  private static record CallbackHttpHandler(Interpreter interpreter, ZorCallable callable, Token token)
+      implements HttpHandler {
+    @Override
+    public void handle(HttpExchange exchange) throws java.io.IOException {
+      var request = createRequest(exchange).toZorInstance();
+      var response = callable.call(interpreter, List.of(request), token);
+      if (!(response instanceof ZodHandler handler))
+        throw new RuntimeError(token,
+            "handler(request) must return a response like htmlResponse(body) or staticResponse(path).");
+
+      handler.handle(exchange);
+    }
+
+    private static Request createRequest(HttpExchange exchange) {
+      var path = exchange.getRequestURI().getPath();
+      var method = exchange.getRequestMethod();
+      return new Request(path, method);
+    }
   }
 }

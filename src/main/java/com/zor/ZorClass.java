@@ -1,17 +1,22 @@
 package com.zor;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-class ZorClass implements ZorCallable {
+public class ZorClass implements ZorCallable {
   final String name;
   private final Map<String, ZorFunction> methods;
   final ZorClass superclass;
 
-  ZorClass(String name, ZorClass superclass, Map<String, ZorFunction> methods) {
+  public ZorClass(String name, ZorClass superclass, Map<String, ZorFunction> methods) {
     this.name = name;
     this.methods = methods;
     this.superclass = superclass;
+  }
+
+  public ZorClass(String name) {
+    this(name, null, new HashMap<>());
   }
 
   public ZorFunction findMethod(String name) {
